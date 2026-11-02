@@ -214,7 +214,7 @@ function Hero({ t, onOpen, opened }) {
     <section className="hero dark-section">
       <img
         className="photo"
-        src={opened ? "/images/2-rasm.jpg" : "/images/toy bulitti.png"}
+        src={opened ? "/images/toy bulitti.png" : "/images/toy bulitti.png"}
         alt="Wedding couple"
       />
       <div className="shade" />
@@ -284,7 +284,7 @@ function Intro({ t }) {
       <span className="chapter">01</span>
       <img
         className="photo"
-        src="/images/wedding-beach.png"
+        src="/images/2-rasm.jpg"
         alt="Wedding couple"
       />
       <div className="shade soft" />
