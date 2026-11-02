@@ -344,10 +344,10 @@ function DateSection({ t, language }) {
 }
 
 const events = [
-  ["18:00", "guests", "♧"],
-  ["19:00", "ceremony", "◎"],
-  ["20:00", "dinner", "⌒"],
-  ["22:00", "end", "✣"],
+  ["16:00", "guests", "♧"],
+  ["17:00", "ceremony", "◎"],
+  ["18:00", "dinner", "⌒"],
+  ["20:00", "end", "✣"],
 ];
 function Program({ t }) {
   return (
