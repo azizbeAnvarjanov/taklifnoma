@@ -1,8 +1,9 @@
 import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
+import { getWeddingDate, getMonthLabel } from "./wedding-date.js";
 
-const weddingDate = new Date("2026-11-21T18:00:00+05:00");
+const wedding = getWeddingDate(window.location.search);
 const copy = {
   UZ: {
     invited: "SIZGA TAKLIFNOMA KELDI",
@@ -21,7 +22,6 @@ const copy = {
     hours: "SOAT",
     minutes: "DAQIQA",
     seconds: "SONIYA",
-    month: "NOYABR 2026",
     weekdays: ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"],
     starts: "BOSHLANISHI 18:00 DA",
     program: "DASTUR",
@@ -55,7 +55,6 @@ const copy = {
     hours: "ЧАСОВ",
     minutes: "МИНУТ",
     seconds: "СЕКУНД",
-    month: "НОЯБРЬ 2026",
     weekdays: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"],
     starts: "НАЧАЛО В 18:00",
     program: "ПРОГРАММА",
@@ -89,7 +88,6 @@ const copy = {
     hours: "HOURS",
     minutes: "MINUTES",
     seconds: "SECONDS",
-    month: "NOVEMBER 2026",
     weekdays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
     starts: "STARTING AT 18:00",
     program: "PROGRAM",
@@ -110,7 +108,7 @@ const copy = {
 
 function useCountdown() {
   const calculate = () => {
-    const gap = Math.max(0, weddingDate - Date.now());
+    const gap = Math.max(0, wedding.instant - Date.now());
     return {
       days: Math.floor(gap / 86400000),
       hours: Math.floor((gap / 3600000) % 24),
@@ -229,7 +227,7 @@ function Hero({ t, onOpen, opened }) {
         </h1>
         <div className="date-line">
           <span />
-          21 <i>•</i> 11 <i>•</i> 2026
+          {wedding.dayLabel} <i>•</i> {wedding.monthLabel} <i>•</i> {wedding.year}
           <span />
         </div>
         {opened && (
@@ -299,7 +297,7 @@ function Intro({ t }) {
   );
 }
 
-function DateSection({ t }) {
+function DateSection({ t, language }) {
   const time = useCountdown();
   const values = [time.days, time.hours, time.minutes, time.seconds];
   const labels = [t.days, t.hours, t.minutes, t.seconds];
@@ -308,7 +306,7 @@ function DateSection({ t }) {
       <span className="chapter dark-chapter">02</span>
       <div className="paper-card">
         <p className="section-label">{t.date}</p>
-        <h2>21 11 2026</h2>
+        <h2>{wedding.dayLabel} {wedding.monthLabel} {wedding.year}</h2>
         <Ornament dark />
         <p className="section-label">{t.left}</p>
         <div className="countdown">
@@ -320,17 +318,17 @@ function DateSection({ t }) {
           ))}
         </div>
         <div className="star">✦</div>
-        <h3>{t.month}</h3>
+        <h3>{getMonthLabel(wedding, language)}</h3>
         <div className="weekdays">
           {t.weekdays.map((d) => (
             <span key={d}>{d}</span>
           ))}
         </div>
         <div className="calendar">
-          {Array.from({ length: 30 }, (_, i) => i + 1).map((day) => (
+          {Array.from({ length: wedding.daysInMonth }, (_, i) => i + 1).map((day) => (
             <span
-              style={day === 1 ? { gridColumn: 7 } : undefined}
-              className={day === 21 ? "selected" : ""}
+              style={day === 1 ? { gridColumn: wedding.firstColumn } : undefined}
+              className={day === wedding.day ? "selected" : ""}
               key={day}
             >
               {day}
@@ -485,7 +483,7 @@ function App() {
             }
           />
           <Intro t={t} />
-          <DateSection t={t} />
+          <DateSection t={t} language={language} />
           <Program t={t} />
           <Venue t={t} />
         </div>
