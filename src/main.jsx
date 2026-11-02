@@ -1,9 +1,10 @@
 import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
-import { getWeddingDate, getMonthLabel } from "./wedding-date.js";
+import { getWeddingDate, getMonthLabel, getWeddingVenue } from "./wedding-date.js";
 
 const wedding = getWeddingDate(window.location.search);
+const venue = getWeddingVenue(wedding);
 const copy = {
   UZ: {
     invited: "SIZGA TAKLIFNOMA KELDI",
@@ -378,36 +379,39 @@ function Venue({ t }) {
       <div className="silk" />
       <div className="venue-frame">
         <p className="gold-pill">✦ &nbsp; {t.locationLabel} &nbsp; ✦</p>
-        <h2>{t.location}</h2>
+        <h2>{venue.name || t.location}</h2>
         <p className="venue-sub multiline">{t.locationSub}</p>
         <Ornament />
         <div className="venue-photo">
-          <div className="building">
-            
-          </div>
-          <p>{t.restaurant}</p>
+          <div
+            className="building"
+            style={{ backgroundImage: `url("${venue.image}")` }}
+            role="img"
+            aria-label={venue.name || t.restaurant}
+          />
+          <p>{venue.name || t.restaurant}</p>
         </div>
         <div className="map-card">
-          <div className="map-art">
+          {!venue.name && <div className="map-art">
             <i />
             <i />
             <i />
             <b>72</b>
             <span>OLMAZOR</span>
-          </div>
+          </div>}
           <div className="address">
             <span>⌖</span>
-            <p>{t.address}</p>
+            <p>{venue.name || t.address}</p>
           </div>
           <a
-            href="https://maps.app.goo.gl/pX7tTPts39B2FH7G7"
+            href={venue.googleMaps}
             target="_blank"
             rel="noreferrer"
           >
             ⌖ &nbsp; {t.map}
           </a>
           <a
-            href="https://yandex.uz/maps/-/CXrMaP9S"
+            href={venue.yandexMaps}
             target="_blank"
             rel="noreferrer"
           >

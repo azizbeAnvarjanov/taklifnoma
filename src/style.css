@@ -532,7 +532,8 @@ h1 em {
 }
 
 .venue h2 {
-    font: 400 39px/1.15 'Cormorant Garamond', serif;
+    font: 500 clamp(22px, 6vw, 26px)/1.4 Montserrat, Arial, sans-serif;
+    overflow-wrap: anywhere;
     margin: 10px 0
 }
 
@@ -582,8 +583,9 @@ h1 em {
 }
 
 .venue-photo>p {
-    font: 38px 'Great Vibes', cursive;
-    margin: 22px 0 0
+    font: 500 18px/1.5 Montserrat, Arial, sans-serif;
+    overflow-wrap: anywhere;
+    margin: 16px 0 0
 }
 
 .map-card {
