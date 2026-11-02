@@ -149,7 +149,7 @@ function NextButton({ target, t, light = false, final = false }) {
   );
 }
 
-function Controls({ language, setLanguage }) {
+function Controls({ language, setLanguage, opened, playing, onToggleMusic }) {
   return (
     <header className="controls">
       <nav>
@@ -163,6 +163,16 @@ function Controls({ language, setLanguage }) {
           </button>
         ))}
       </nav>
+      {opened && (
+        <button
+          className={`sound ${playing ? "playing" : ""}`}
+          onClick={onToggleMusic}
+          aria-label={playing ? "Musiqani to‘xtatish" : "Musiqani yoqish"}
+          aria-pressed={playing}
+        >
+          {playing ? <span className="equalizer"><i /><i /><i /></span> : "♪"}
+        </button>
+      )}
     </header>
   );
 }
@@ -190,7 +200,7 @@ function Hero({ t, onOpen, opened }) {
     setDragging(false);
     if (swipe > max * 0.72) {
       setSwipe(max);
-      window.setTimeout(onOpen, 180);
+      onOpen();
     } else setSwipe(0);
   };
   const begin = (event) => {
@@ -204,7 +214,7 @@ function Hero({ t, onOpen, opened }) {
     <section className="hero dark-section">
       <img
         className="photo"
-        src="/images/toy bulitti.png"
+        src={opened ? "/images/2-rasm.jpg" : "/images/toy bulitti.png"}
         alt="Wedding couple"
       />
       <div className="shade" />
@@ -251,10 +261,15 @@ function Hero({ t, onOpen, opened }) {
               onPointerDown={begin}
               onPointerMove={move}
               onPointerUp={finish}
-              onPointerCancel={finish}
+              onPointerCancel={() => { setDragging(false); setSwipe(0); }}
+              onClick={(event) => { if (event.detail === 0) onOpen(); }}
               aria-label={t.swipe}
             >
-              ♙
+              <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <circle cx="12" cy="19" r="7" stroke="currentColor" strokeWidth="1.8" />
+                <circle cx="21" cy="19" r="7" stroke="currentColor" strokeWidth="1.8" />
+                <path d="m8 8 2-3h4l2 3-4 5-4-5Z M8 8h8 M10 5l2 8 2-8" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+              </svg>
             </button>
           </div>
         </div>
@@ -411,6 +426,20 @@ function Venue({ t }) {
 function App() {
   const [opened, setOpened] = useState(false);
   const [language, setLanguage] = useState("UZ");
+  const [playing, setPlaying] = useState(false);
+  const audio = useRef(null);
+  const playMusic = () => {
+    audio.current?.play().catch(() => setPlaying(false));
+  };
+  const openInvitation = () => {
+    // Start playback inside the unlock gesture so mobile browsers allow audio.
+    playMusic();
+    setOpened(true);
+  };
+  const toggleMusic = () => {
+    if (audio.current?.paused) playMusic();
+    else audio.current?.pause();
+  };
   const t = copy[language];
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -426,9 +455,24 @@ function App() {
   }, [opened]);
   return (
     <main className={opened ? "app opened" : "app"}>
-      <Controls language={language} setLanguage={setLanguage} />
+      <audio
+        ref={audio}
+        src="/taklifnoma.mp3"
+        loop
+        preload="auto"
+        onPlay={() => setPlaying(true)}
+        onPause={() => setPlaying(false)}
+        onError={() => setPlaying(false)}
+      />
+      <Controls
+        language={language}
+        setLanguage={setLanguage}
+        opened={opened}
+        playing={playing}
+        onToggleMusic={toggleMusic}
+      />
       {!opened ? (
-        <Hero t={t} onOpen={() => setOpened(true)} />
+        <Hero t={t} onOpen={openInvitation} />
       ) : (
         <div className="content">
           <Hero
