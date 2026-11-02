@@ -224,7 +224,7 @@ function Hero({ t, onOpen, opened }) {
           <span />
         </div>
         <h1>
-          Abrorbke <em>&</em> Muborakxon
+          Abrorbek <em>&</em> Muborakxon
         </h1>
         <div className="date-line">
           <span />
